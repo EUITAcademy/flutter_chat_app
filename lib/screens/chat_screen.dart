@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               // Disconnect and go to AuthPage
               _channel.sink.close();
-              Navigator.pushNamed(context, AuthScreen.routeName);
+              Navigator.pushReplacementNamed(context, AuthScreen.routeName);
             },
             icon: const Icon(Icons.logout),
           ),

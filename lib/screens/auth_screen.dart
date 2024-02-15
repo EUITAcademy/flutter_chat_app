@@ -11,13 +11,30 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+
+  // Animating rotation on start
+  double turns = 0.0;
+  void _changeRotation() {
+    setState(() => turns = 3);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // addPostFrameCallback ensures
+    // we call action inside the callback after widget is build!
+    // Otherwise _scrollController will throw error.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _changeRotation();
+    });
+  }
+
   String userName = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.stream),
         title: const Text('Chat app'),
       ),
       body: Padding(
@@ -28,6 +45,17 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Column(
           children: [
             const SizedBox(height: 48),
+            // Example of rotation animation,
+            AnimatedRotation(
+              turns: turns,
+              duration: const Duration(seconds: 3),
+              curve: Curves.ease,
+              child: const Icon(
+                Icons.stream,
+                size: 54,
+              ),
+            ),
+            const SizedBox(height: 48),
             TextField(
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.person),
@@ -35,27 +63,36 @@ class _AuthScreenState extends State<AuthScreen> {
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (String newText) {
-                  if (newText.isNotEmpty) {
-                    // No need to setState,
-                    // Because we don't use userName in widget
-                    // Hence we don't need to rebuild the screen
-                    userName = newText;
-                  }
+                  userName = newText;
+                  // Changing color of the button
+                  setState(() {});
                 }),
             const SizedBox(height: 20),
-            OutlinedButton(
-              onPressed: () {
+            // You can Detect Gestures with gesture detector.
+            GestureDetector(
+              onTap: () {
+                if (userName.isEmpty) {
+                  return;
+                }
+
                 // Arguments are generic(can be map or String or other type),
                 // in onGenerateRoute we expect String, that is why we pass userName here
-                Navigator.pushNamed(
+                Navigator.pushReplacementNamed(
                   context,
                   ChatScreen.routeName,
                   arguments: userName,
                 );
               },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text('Enter'),
+              // Animated container Example!
+              // Change values, provide duration and it will animate automatically!
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                color:
+                    userName.isNotEmpty ? Colors.deepPurple : Colors.pinkAccent,
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(child: Text('Enter chat')),
+                ),
               ),
             ),
           ],
