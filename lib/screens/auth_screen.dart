@@ -12,23 +12,6 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
 
-  // Animating rotation on start
-  double turns = 0.0;
-  void _changeRotation() {
-    setState(() => turns = 3);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // addPostFrameCallback ensures
-    // we call action inside the callback after widget is build!
-    // Otherwise _scrollController will throw error.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _changeRotation();
-    });
-  }
-
   String userName = '';
 
   @override
@@ -46,14 +29,9 @@ class _AuthScreenState extends State<AuthScreen> {
           children: [
             const SizedBox(height: 48),
             // Example of rotation animation,
-            AnimatedRotation(
-              turns: turns,
-              duration: const Duration(seconds: 3),
-              curve: Curves.ease,
-              child: const Icon(
-                Icons.stream,
-                size: 54,
-              ),
+            const Icon(
+              Icons.stream,
+              size: 54,
             ),
             const SizedBox(height: 48),
             TextField(
@@ -64,8 +42,6 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
                 onChanged: (String newText) {
                   userName = newText;
-                  // Changing color of the button
-                  setState(() {});
                 }),
             const SizedBox(height: 20),
             // You can Detect Gestures with gesture detector.
@@ -85,10 +61,8 @@ class _AuthScreenState extends State<AuthScreen> {
               },
               // Animated container Example!
               // Change values, provide duration and it will animate automatically!
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                color:
-                    userName.isNotEmpty ? Colors.deepPurple : Colors.pinkAccent,
+              child: Container(
+                color: Colors.pinkAccent,
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Center(child: Text('Enter chat')),

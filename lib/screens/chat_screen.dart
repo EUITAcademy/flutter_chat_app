@@ -33,16 +33,12 @@ class _ChatScreenState extends State<ChatScreen> {
   // and also clear textfield )
   late final TextEditingController _textEditingController;
 
-  // With Scroll controller we can scroll programmatically
-  // For example when we receive new message.
-  late final ScrollController _scrollController;
 
   @override
   void initState() {
     // Connect to socket.
     _channel = WebSocketChannel.connect(wsUrl);
 
-    _scrollController = ScrollController();
     _textEditingController = TextEditingController();
     super.initState();
   }
@@ -89,16 +85,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
                 sink.add(elements);
 
-                // addPostFrameCallback ensures
-                // we call action inside the callback after widget is build!
-                // Otherwise _scrollController will throw error.
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                  );
-                });
               },
             ),
           ),
@@ -119,7 +105,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       Expanded(
                         child: snapshot.hasData
                             ? ListView.builder(
-                                controller: _scrollController,
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
                                   final user = snapshot.data![index].userName;
